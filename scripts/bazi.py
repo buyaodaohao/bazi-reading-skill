@@ -448,6 +448,58 @@ def bazi_paipan(birth_year, birth_month, birth_day, hour, minute,
     l_gan = get_gan(l_gz)
     l_zhi = get_zhi(l_gz)
 
+    # Step 14: 姻缘分析基础数据
+    # 桃花星（年支定桃花）
+    TAO_HUA = {
+        "申":"酉","子":"酉","辰":"酉",
+        "寅":"卯","午":"卯","戌":"卯",
+        "巳":"午","酉":"午","丑":"午",
+        "亥":"子","卯":"子","未":"子",
+    }
+    year_zhi_en = year_zhi  # 年支中文
+    peach_flower_zhi = TAO_HUA.get(year_zhi_en, "")
+    peach_flower_positions = []
+    pillar_zhi_list = [
+        ("年柱", year_zhi), ("月柱", month_zhi),
+        ("日柱", day_zhi), ("时柱", hour_zhi),
+    ]
+    for name, zhi in pillar_zhi_list:
+        if zhi == peach_flower_zhi:
+            peach_flower_positions.append(name)
+
+    # 配偶星
+    # 男命：正财为妻，偏财为情人/偏妻
+    # 女命：正官为夫，七杀为偏夫/情人
+    spouse_stars_male = {"正财": [], "偏财": []}
+    spouse_stars_female = {"正官": [], "七杀": []}
+    
+    pillar_shishen_list = [
+        ("年柱", shishen_list[0]), ("月柱", shishen_list[1]),
+        ("时柱", shishen_list[3]),
+    ]
+    for name, ss in pillar_shishen_list:
+        if gender == "男":
+            if ss == "正财":
+                spouse_stars_male["正财"].append(name)
+            elif ss == "偏财":
+                spouse_stars_male["偏财"].append(name)
+        else:  # 女命
+            if ss == "正官":
+                spouse_stars_female["正官"].append(name)
+            elif ss == "七杀":
+                spouse_stars_female["七杀"].append(name)
+
+    marriage = {
+        "peach_flower_zhi": peach_flower_zhi,
+        "peach_flower_positions": peach_flower_positions,
+        "spouse_palace_zhi": day_zhi,
+        "spouse_palace_canggan": canggan_data[2],
+    }
+    if gender == "男":
+        marriage["spouse_star"] = spouse_stars_male
+    else:
+        marriage["spouse_star"] = spouse_stars_female
+
     return {
         "solar": f"{solar_year}年{solar_month}月{solar_day}日",
         "lunar": lunar_str,
@@ -487,6 +539,7 @@ def bazi_paipan(birth_year, birth_month, birth_day, hour, minute,
             "zhi": l_zhi,
             "shishen": get_shishen(day_gan, l_gan),
         },
+        "marriage": marriage,
     }
 
 

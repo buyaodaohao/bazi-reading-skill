@@ -26,7 +26,7 @@ python3 scripts/bazi.py <年> <月> <日> <时> <分> "<地点>" "<性别>"
 示例：
 
 ```bash
-python3 scripts/bazi.py 1992 1 26 12 0 "河南省宝丰县闹店镇" "男"
+python3 scripts/bazi.py 2000 1 1 8 0 "北京" "男"
 ```
 
 参数说明：
